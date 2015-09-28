@@ -30,6 +30,7 @@ angular.module('plupload.directive', [])
 
 	})	
 	.directive('plUpload', ['$parse', 'plUploadService', function ($parse, plUploadService) {
+		function oExtend(){var e=Array.prototype.slice.call(arguments);0===e.length&&(e=[{}]);var t="boolean"===typeof e[e.length-1]?e.splice(-1)[0]:!1,o=e.length>1?e[0]:{};return"object"===typeof o&&o||(o={}),e.forEach(function(e){Object.keys(e).forEach(function(n){var r=e[n];t&&r&&"object"===typeof r?(o[n]=r instanceof Array?[]:{},oExtend(o[n],r,t)):o[n]=r;});}),o;}
 		return {
 			restrict: 'A',
 			scope: {
@@ -37,7 +38,8 @@ angular.module('plupload.directive', [])
 				'plFilesModel': '=',
 				'plFiltersModel': '=',
 				'plMultiParamsModel':'=',
-				'plInstance': '='
+				'plInstance': '=',
+				'plOptions': '='
 			},
 			link: function (scope, iElement, iAttrs) {
 
@@ -88,13 +90,16 @@ angular.module('plupload.directive', [])
 						flash_swf_url : iAttrs.plFlashSwfUrl,
 						silverlight_xap_url : iAttrs.plSilverlightXapUrl,
 						filters : scope.filters
-				}
+				};
 
 
 				if(scope.plMultiParamsModel){
 					options.multipart_params = scope.plMultiParamsModel;
 				}
 
+				if(scope.plOptions && typeof scope.plOptions === "object"){
+					oExtend(options,scope.plOptions);
+				}
 
 				var uploader = new plupload.Uploader(options);
 
